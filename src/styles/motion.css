@@ -1,0 +1,77 @@
+@keyframes rise { from { opacity: .2; transform: translateY(16px); } }
+@keyframes line-up { from { transform: translateY(105%); } }
+@keyframes fade-up { from { opacity: 0; transform: translateY(8px); } }
+@keyframes pop { 40% { transform: scale(1.18); } }
+@keyframes pulse { 0% { opacity: .7; transform: scale(1); } 70%, 100% { opacity: 0; transform: scale(1.5); } }
+@keyframes page-in-forward { from { opacity: 0; transform: translateX(20px); } }
+@keyframes page-in-back { from { opacity: 0; transform: translateX(-20px); } }
+@keyframes page-out { to { opacity: 0; } }
+
+/* 用語集パネルと用語の吹き出しは、開閉をCSSだけで動かす */
+dialog {
+  transform: translateX(100%);
+  transition: transform var(--mid) var(--ease), overlay var(--mid) allow-discrete, display var(--mid) allow-discrete;
+}
+dialog[open] { transform: none; }
+@starting-style { dialog[open] { transform: translateX(100%); } }
+dialog::backdrop {
+  background: rgb(0 0 0 / 0);
+  transition: background-color var(--mid), overlay var(--mid) allow-discrete, display var(--mid) allow-discrete;
+}
+dialog[open]::backdrop { background: rgb(0 0 0 / .28); }
+@starting-style { dialog[open]::backdrop { background: rgb(0 0 0 / 0); } }
+
+#term-pop {
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity var(--fast), transform var(--fast) var(--ease), overlay var(--fast) allow-discrete, display var(--fast) allow-discrete;
+}
+#term-pop:popover-open { opacity: 1; transform: none; }
+@starting-style { #term-pop:popover-open { opacity: 0; transform: translateY(4px); } }
+
+/* ページ切り替え */
+.top { view-transition-name: top; }
+.side { view-transition-name: side; }
+main { view-transition-name: main; }
+::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+::view-transition-group(main), ::view-transition-group(side) { animation-duration: 0s; }
+::view-transition-old(main) { animation: page-out .14s ease both; }
+::view-transition-new(main) { animation: page-in-forward var(--mid) var(--ease) both; height: auto; }
+[data-direction="back"]::view-transition-new(main) { animation-name: page-in-back; }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* 最初の読み込み時だけ、見出しを1行ずつ上げる */
+  :root:not(.visited) .hero .line > span { animation: line-up .9s var(--ease) both; }
+  :root:not(.visited) .hero .line:nth-child(2) > span { animation-delay: .07s; }
+  :root:not(.visited) .hero .line:nth-child(3) > span { animation-delay: .14s; }
+  :root:not(.visited) :is(.lead, .next-card, .colophon) { animation: fade-up .7s var(--ease) .2s both; }
+
+  /* スクロール連動。未対応のブラウザでは最初から見えている */
+  @supports (animation-timeline: view()) {
+    .stop {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+  }
+
+  /* 今いる地点だけ、ゆっくり脈打つ */
+  .is-current .node::after, .steps .is-next .node::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    animation: pulse 2.8s var(--ease) infinite;
+    pointer-events: none;
+  }
+
+  .just-done .node { animation: pop .45s var(--ease); }
+  .finish { animation: fade-up .6s var(--ease) both; }
+  .step-inner > * { transition: opacity var(--mid), transform var(--mid) var(--ease); }
+  .js .steps > li:not(.is-open) .step-inner > * { opacity: 0; transform: translateY(-4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0s !important; animation: none !important; }
+}

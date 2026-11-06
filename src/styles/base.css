@@ -1,0 +1,133 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scrollbar-gutter: stable;
+  scroll-padding-top: calc(var(--header) + 20px);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.85;
+  line-break: strict;
+  overflow-wrap: anywhere;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, p, ul, ol, dl, dd { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+
+h1, h2, h3 {
+  font-weight: 700;
+  line-height: 1.4;
+  text-wrap: balance;
+  word-break: auto-phrase;
+  font-feature-settings: "palt";
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color var(--fast), text-decoration-thickness var(--fast);
+}
+a:hover { text-decoration-thickness: 2px; }
+
+button { font: inherit; color: inherit; cursor: pointer; }
+strong { font-weight: 700; }
+
+code {
+  font-family: var(--mono);
+  font-size: .9em;
+  background: var(--soft);
+  padding: .1em .4em;
+  border-radius: 4px;
+}
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+h1:focus { outline: none; }
+[hidden] { display: none !important; }
+
+/* TypeScript の準備ができるまで、全ページが一瞬並ぶのを防ぐ */
+.js:not(.ready) [data-view] { display: none; }
+
+/* 共通の丸印 */
+.node {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid var(--fg);
+  border-radius: 50%;
+  background: var(--bg);
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 15px;
+  transition: background-color var(--mid) var(--ease), border-color var(--mid) var(--ease), color var(--mid) var(--ease), transform var(--mid) var(--ease);
+}
+.node > * { grid-area: 1 / 1; }
+.num { transition: opacity var(--fast); }
+
+.tick { width: 55%; height: 55%; stroke: #ffffff; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.tick path { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset var(--mid) var(--ease); }
+
+.is-current .node { border: 2px solid var(--accent); color: var(--accent); }
+.is-done .node { background: var(--accent); border-color: var(--accent); }
+.is-done .node .num { opacity: 0; }
+.is-done .node .tick path { stroke-dashoffset: 0; }
+
+/* 丸印を貫く線 */
+.track { position: absolute; z-index: 0; width: 2px; margin-left: -1px; background: var(--line); }
+.track i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform var(--slow) var(--ease);
+}
+
+/* 進捗の点 */
+.dots { display: inline-flex; flex-wrap: wrap; gap: 3px; }
+.dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--line); transition: background-color var(--mid), transform var(--mid) var(--ease); }
+.dots i.on { background: var(--accent); }
+
+/* ボタン */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 22px;
+  background: var(--accent);
+  border-radius: 999px;
+  color: #ffffff;
+  font-weight: 500;
+  line-height: 1.5;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color var(--fast), transform var(--fast) var(--ease);
+}
+.btn:hover { background: var(--accent-press); }
+.btn:active { transform: scale(.98); }
+
+.arrow { width: 16px; height: 16px; flex: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: transform var(--mid) var(--ease); }
+a:hover > .arrow { transform: translateX(3px); }
+
+.btn-quiet {
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 14px;
+  font-size: 13px;
+  white-space: nowrap;
+  transition: border-color var(--fast), transform var(--fast) var(--ease);
+}
+.btn-quiet:hover { border-color: var(--fg); }
+.btn-quiet:active { transform: scale(.97); }

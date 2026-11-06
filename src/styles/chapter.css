@@ -1,0 +1,198 @@
+/* 章のページ */
+.kicker { font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+.prog { font-family: var(--mono); font-size: 13px; color: var(--accent); font-variant-numeric: tabular-nums; }
+.page h1 { margin-top: 6px; font-size: clamp(26px, 4vw, 38px); letter-spacing: -.01em; }
+.intro-p { margin-top: 16px; }
+.page h2 { margin-top: 48px; font-size: 21px; }
+
+.steps-bar { margin-top: 28px; display: flex; justify-content: flex-end; }
+
+/* 手順 */
+.steps { position: relative; margin-top: 12px; display: grid; }
+.steps > li {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  column-gap: 16px;
+  scroll-margin-top: calc(var(--header) + 16px);
+}
+.steps .node { width: 36px; height: 36px; font-size: 14px; }
+.steps > li:not(.is-next):not(.is-done) .node { border-color: var(--muted); color: var(--muted); }
+.is-next .node { border: 2px solid var(--accent); color: var(--accent); }
+.sb { min-width: 0; padding-bottom: 14px; }
+.sb h3 { font-size: 17px; }
+.step-head {
+  display: block;
+  width: 100%;
+  min-height: 36px;
+  padding: 4px 28px 4px 0;
+  background: none;
+  border: 0;
+  text-align: left;
+  font-weight: 700;
+  line-height: 1.6;
+  position: relative;
+  transition: color var(--fast);
+}
+.step-head:hover { color: var(--accent); }
+.step-head::after {
+  content: "";
+  position: absolute;
+  right: 6px;
+  top: 13px;
+  width: 8px;
+  height: 8px;
+  border-right: 1.5px solid var(--muted);
+  border-bottom: 1.5px solid var(--muted);
+  transform: rotate(45deg);
+  transition: transform var(--mid) var(--ease);
+}
+[aria-expanded="true"].step-head::after { transform: translateY(4px) rotate(-135deg); }
+.js .is-done .step-head { font-weight: 500; }
+
+/* JavaScript なしでは全手順を開いたまま読める */
+.js .step-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--mid) var(--ease); }
+.js .is-open .step-panel { grid-template-rows: 1fr; }
+.step-inner { min-height: 0; overflow: hidden; padding: 0 3px; margin-inline: -3px; }
+.js .step-inner { visibility: hidden; transition: visibility 0s linear var(--mid); }
+.js .is-open .step-inner { visibility: visible; transition-delay: 0s; }
+.step-inner > :first-child { margin-top: 4px; }
+.step-inner p + *, .step-inner p { margin-top: 6px; }
+.step-inner ul { display: grid; gap: 6px; }
+.sub li { position: relative; padding-left: 1.1em; }
+.sub li::before { content: ""; position: absolute; left: 0; top: .85em; width: 7px; height: 2px; background: var(--accent); }
+
+.got {
+  margin: 14px 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 4px 18px 4px 12px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 14px;
+  line-height: 1.5;
+  transition: background-color var(--fast), border-color var(--fast), color var(--fast), transform var(--fast) var(--ease);
+}
+.got:hover { border-color: var(--fg); }
+.got:active { transform: scale(.97); }
+.box { display: grid; place-items: center; width: 18px; height: 18px; border: 1.5px solid currentColor; border-radius: 50%; transition: background-color var(--fast), border-color var(--fast); }
+.box .tick { width: 12px; height: 12px; }
+.is-next .got { background: var(--accent); border-color: var(--accent); color: #ffffff; font-weight: 500; }
+.is-next .got:hover { background: var(--accent-press); border-color: var(--accent-press); }
+.got[aria-pressed="true"] { color: var(--muted); }
+.got[aria-pressed="true"] .box { background: var(--accent); border-color: var(--accent); }
+.got[aria-pressed="true"] .tick path { stroke-dashoffset: 0; }
+
+.prompt { margin-top: 12px; background: var(--soft); border-radius: var(--radius); padding: 14px 16px; }
+.prompt-h { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 12px; font-size: 13px; font-weight: 500; }
+.copy {
+  background: var(--bg);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 2px 12px;
+  font-size: 12px;
+  transition: background-color var(--fast), color var(--fast), transform var(--fast) var(--ease);
+}
+.copy:hover, .copy.is-copied { background: var(--accent); color: #ffffff; }
+.copy:active { transform: scale(.96); }
+.sub .copy { margin-inline: 6px; }
+
+/* ポイントと注意 */
+.after-steps { scroll-margin-top: calc(var(--header) + 16px); }
+.points { display: grid; gap: 10px; margin-top: 16px; }
+.points > li { position: relative; padding-left: 1.3em; }
+.points > li::before { content: ""; position: absolute; left: 0; top: .85em; width: 10px; height: 2px; background: var(--accent); }
+.warn { margin-top: 16px; border: 1.5px solid var(--fg); border-radius: var(--radius); padding: 16px 18px; }
+.warn b { display: block; font-size: 14px; }
+
+.finish { margin-top: 32px; display: flex; align-items: center; gap: 10px; color: var(--accent); font-weight: 700; }
+.finish::before {
+  content: "";
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* 前後の移動 */
+.pager { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.pager a {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--fg);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.55;
+  transition: background-color var(--mid) var(--ease), border-color var(--fast), color var(--mid) var(--ease), transform var(--fast) var(--ease);
+}
+.pager a small { font-size: 12px; font-weight: 400; color: var(--muted); transition: color var(--mid); }
+.pager a:hover { border-color: var(--fg); }
+.pager a:active { transform: scale(.99); }
+.pager .next { grid-column: 2; text-align: right; }
+.is-complete .pager .next { background: var(--accent); border-color: var(--accent); color: #ffffff; }
+.is-complete .pager .next small { color: #ffffff; }
+.is-complete .pager .next:hover { background: var(--accent-press); border-color: var(--accent-press); }
+
+/* 表と用語 */
+.tbl { margin-top: 16px; overflow-x: auto; }
+table { width: 100%; min-width: 460px; border-collapse: collapse; font-size: 15px; line-height: 1.6; }
+th, td { padding: 10px 12px 10px 0; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 13px; font-weight: 500; color: var(--muted); }
+td:first-child { font-family: var(--mono); }
+.terms { margin-top: 16px; }
+.terms div { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.terms dt { font-weight: 700; }
+.terms dd { font-size: 15px; line-height: 1.75; }
+
+/* チェックリスト */
+.checks { margin-top: 28px; }
+.checks li { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.checks label { display: flex; align-items: flex-start; gap: 12px; min-width: 0; line-height: 1.7; cursor: pointer; }
+.checks input {
+  flex: none;
+  appearance: none;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin: 2px 0 0;
+  border: 1.5px solid var(--fg);
+  border-radius: 50%;
+  background: var(--bg);
+  cursor: pointer;
+  transition: background-color var(--fast), border-color var(--fast), transform var(--fast) var(--ease);
+}
+.checks input:hover { border-color: var(--accent); }
+.checks input:active { transform: scale(.9); }
+.checks input::before {
+  content: "";
+  width: 6px;
+  height: 11px;
+  margin-top: -2px;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  transform: rotate(45deg) scale(0);
+  transition: transform var(--mid) var(--ease);
+}
+.checks input:checked { background: var(--accent); border-color: var(--accent); }
+.checks input:checked::before { transform: rotate(45deg) scale(1); }
+.checks a { flex: none; font-size: 13px; line-height: 2; }
+.refs { margin-top: 16px; display: grid; gap: 8px; font-size: 15px; }
+.saved { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.saved .btn-quiet { color: var(--fg); }
+.saved + .pager { border-top: 0; margin-top: 8px; }
+
+@media (max-width: 520px) {
+  .pager a { padding: 10px 12px; font-size: 14px; }
+}

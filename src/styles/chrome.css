@@ -1,0 +1,139 @@
+/* ヘッダー */
+.top {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: rgb(255 255 255 / .86);
+  backdrop-filter: saturate(160%) blur(14px);
+}
+.top-in {
+  max-width: 1200px;
+  height: var(--header);
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.crumbs { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; font-size: 13px; white-space: nowrap; }
+.crumb {
+  flex: none;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--fg);
+  font-weight: 500;
+  text-decoration: none;
+  overflow: hidden;
+}
+#crumb-home { overflow: hidden; text-overflow: ellipsis; }
+.crumb .arrow { transform: rotate(180deg); display: none; }
+.crumb:hover .arrow { transform: rotate(180deg) translateX(3px); }
+.crumb:hover { color: var(--accent); }
+body[data-route="home"] .crumb { flex: 0 1 auto; }
+body:not([data-route="home"]) .crumb .arrow { display: block; }
+.crumb-current { min-width: 0; color: var(--muted); overflow: hidden; text-overflow: ellipsis; }
+.crumb-current:not(:empty)::before { content: "/"; margin-right: 10px; color: var(--line); }
+body[data-route="home"] .crumb-current { display: none; }
+
+.meter { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ring { width: 20px; height: 20px; transform: rotate(-90deg); fill: none; stroke-width: 3; }
+.ring circle:first-child { stroke: var(--line); }
+#ring-fill { stroke: var(--accent); stroke-dasharray: 100; stroke-dashoffset: 100; stroke-linecap: round; transition: stroke-dashoffset var(--slow) var(--ease); }
+
+.bar { height: 1px; background: var(--line); }
+.bar i { display: block; height: 2px; margin-top: -.5px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform var(--slow) var(--ease); }
+
+/* ページ枠 */
+.shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+  padding-block: clamp(24px, 5vw, 64px);
+  display: grid;
+  gap: clamp(28px, 5vw, 80px);
+}
+main { min-width: 0; }
+.page { max-width: 720px; }
+
+/* 章の一覧。スマートフォンでは番号の列になる */
+.side { display: none; }
+body:not([data-route="home"]) .side { display: block; }
+.side ol { position: relative; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; }
+.side .track { display: none; }
+.side a { display: flex; justify-content: center; color: var(--fg); text-decoration: none; border-radius: 50%; }
+.side .node { width: min(36px, 100%); height: auto; aspect-ratio: 1; font-size: 13px; }
+.side .lbl { display: none; }
+.side a[aria-current="page"] .node { box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--accent); }
+
+@media (min-width: 960px) {
+  body:not([data-route="home"]) .shell { grid-template-columns: 256px minmax(0, 1fr); }
+  body:not([data-route="home"]) .side { position: sticky; top: calc(var(--header) + 32px); align-self: start; }
+  .side ol { display: block; }
+  .side .track { display: block; }
+  .side li { position: relative; z-index: 1; }
+  .side a { justify-content: flex-start; align-items: center; gap: 12px; padding: 7px 0; border-radius: 6px; }
+  .side .node { width: 28px; font-size: 12px; }
+  .side a:hover .node { transform: scale(1.1); }
+  .side .lbl { display: block; font-size: 14px; line-height: 1.45; color: var(--muted); transition: color var(--fast); }
+  .side a:hover .lbl { color: var(--fg); }
+  .side a[aria-current="page"] .lbl { font-weight: 700; color: var(--fg); }
+  .side a[aria-current="page"] .node { box-shadow: 0 0 0 3px var(--soft); }
+}
+
+@media (max-width: 640px) {
+  .crumb-current { display: none; }
+  .top-in { gap: 12px; }
+  .meter .ring { display: none; }
+}
+
+/* 用語集パネル */
+dialog {
+  margin: 0 0 0 auto;
+  width: min(440px, 100%);
+  height: 100dvh;
+  max-width: 100%;
+  max-height: 100dvh;
+  border: 0;
+  padding: 20px clamp(16px, 4vw, 28px) 40px;
+  background: var(--bg);
+  color: var(--fg);
+}
+.dh { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.dh h2 { font-size: 21px; }
+
+/* 本文中の用語 */
+.term {
+  display: inline;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-bottom: 1.5px dotted var(--accent);
+  transition: color var(--fast);
+}
+.term:hover { color: var(--accent); }
+#term-pop {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  width: min(320px, calc(100vw - 32px));
+  padding: 14px 16px;
+  background: var(--fg);
+  color: #ffffff;
+  border: 0;
+  border-radius: var(--radius);
+  font-size: 14px;
+  line-height: 1.7;
+}
+#term-pop strong { display: block; }
+
+footer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px var(--gutter) 40px;
+  font-size: 13px;
+  color: var(--muted);
+  display: grid;
+  gap: 4px;
+}
